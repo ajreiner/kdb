@@ -1,0 +1,79 @@
+<html>
+<head>
+	<title>Kerbal Dash Board</title>
+    <link rel="stylesheet" href="jqwidgets/jqwidgets/styles/jqx.base.css" type="text/css" />
+    <script type="text/javascript" src="jqwidgets/scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqwidgets/jqxinput.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqwidgets/jqxtooltip.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqwidgets/jqxdocking.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqwidgets/jqxwindow.js"></script>
+	<script type="text/javascript">
+
+		$(document).ready(function(){
+			$(".burn_input").jqxInput({height: 25, width: 100, minLength: 1});
+			$(".burn_button").jqxButton();
+			$("#dashboard").jqxDocking({width: 600, mode: "docked"});
+
+			$("#mass").jqxTooltip({content: "Spacecraft mass in tons (T)."});
+			$("#dv").jqxTooltip({content: "Velocity change (dv) in meters per second (m/s)."});
+			$("#th").jqxTooltip({content: "Total thrust for all engines in kilonewtons (kN)."});
+			$("#isp").jqxTooltip({content: "Burn time in seconds (s)."});
+
+			$(".burn_input").css({"text-align": "right", "padding-right": "5px"});
+
+			$("#clear").on("click", function() {
+				$("#burn").empty();
+			});
+			$("#calc").on("click", function() {
+				$("#burn").empty();
+
+				var e = 2.71828;
+				var g = 9.80665;
+
+				var m = $("#mass").val();
+				var ve = $("#isp").val() * g;
+				var th = $("#th").val();
+				var dv = $("#dv").val();
+
+				var t = ((m * ve) / th) * (1 - Math.pow(e,(-dv/ve)));
+
+				$("#burn").html(Math.round(t * 100) / 100 + " seconds");
+			});
+		});
+
+	</script>
+</head>
+<body>
+	<div style="float: left;" id="dashboard">
+		<div>
+			<div id="burn_div">
+				<div>Burn Time Calculator</div>
+				<div>
+						<table><tbody>
+						<tr><td>Mass:</td><td><input type="text" id="mass" class="burn_input"></td></tr>
+						<tr><td>Velocity Change:</td><td><input type="text" id="dv" class="burn_input"></td></tr>
+						<tr><td>Total Thrust:</td><td><input type="text" id="th" class="burn_input"></td</tr>
+						<tr><td>Specific Impulse:</td><td><input type="text" id="isp" class="burn_input"></td></tr>
+						<tr><td>Burn time:</td><td><div style="float:right" id="burn"></div></td></tr>
+						<tr>
+							<td></td>
+							<td>
+								<button style="float:right" type="button" id="calc" class="burn_button">Calculate</button>
+								<button style="float:right" type="button" id="clear" class="burn_button">Clear</button>
+							</td>
+						</tr>
+						</tbody></table>
+				</div>
+			</div>
+			<div>
+				<div>Header</div>
+				<div>Content</div>
+			</div>
+		</div>
+		<div>
+		</div>
+	</div>
+</body>
+</html>
